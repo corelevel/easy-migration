@@ -91,7 +91,8 @@ The script supports [-WhatIf](https://learn.microsoft.com/en-us/powershell/scrip
 - Run *Invoke-EasyMigration*:
 ```powershell
 Invoke-EasyMigration `
-	-ConnStr "Data Source=(local);Initial Catalog=tempdb;Connection Timeout=5;Encrypt=False;Integrated Security=True;Application Name=easy-migration;" `
+	-ConnStr "Data Source=(local);Initial Catalog=tempdb;Connection Timeout=5;
+        Encrypt=False;Integrated Security=True;Application Name=easy-migration;" `
 	-BasePath ".\migrations" `
 	-Phase "phase01"
 ```
