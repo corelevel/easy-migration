@@ -1,0 +1,19 @@
+{
+    "phase01": {
+        "scripts": [
+            "000-fix-this.sql",
+            "001-fix-that.sql",
+            "job007\\000-kill-all-user-processes.sql"
+        ]
+    },
+    "phase02": {
+        "scripts": [
+            "000-do-cool-stuff.sql"
+        ]
+    },
+    "phase03": {
+        "scripts": [
+            "000-fix-this.sql"
+        ]
+    }
+}

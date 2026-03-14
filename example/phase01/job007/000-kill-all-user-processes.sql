@@ -1,0 +1,2 @@
+print 'Just kidding'
+go
