@@ -1,3 +1,5 @@
+using namespace Microsoft.Data.SqlClient
+
 function Get-FileChecksum {
 	[CmdletBinding()]
 	param (
@@ -23,15 +25,16 @@ function Get-Executed {
 	$sqlReader = $null
 
 	try {
-		$sqlConn = [Microsoft.Data.SqlClient.SQLConnection]::new()
+		$sqlConn = [SQLConnection]::new()
 		$sqlConn.ConnectionString = $ConnStr
-		$query = "
+		$query = @"
 select script_name, [checksum]
 from dbo.easy_migration_history
-where phase = @phase"
+where phase = @phase
+"@
 
 		$sqlConn.Open()
-		$sqlCmd = [Microsoft.Data.SqlClient.SqlCommand]::new($query, $sqlConn)
+		$sqlCmd = [SqlCommand]::new($query, $sqlConn)
 		$sqlCmd.CommandType = [System.Data.CommandType]::Text
 		$pPhase = $sqlCmd.Parameters.Add('@phase', [System.Data.SqlDbType]::NVarChar, 32)
 		$pPhase.Value = $Phase
@@ -84,29 +87,31 @@ function Set-Executed {
 	$sqlCmd = $null
 
 	try {
-		$sqlConn = [Microsoft.Data.SqlClient.SQLConnection]::new()
+		$sqlConn = [SQLConnection]::new()
 		$sqlConn.ConnectionString = $ConnStr
 
 		$query = ""
 		if ($ForceScript) {
-			$query = "
+			$query = @"
 update dbo.easy_migration_history
 set [checksum] = @checksum, executed_at = sysutcdatetime()
 where script_name = @script_name and phase = @phase
 
 if @@rowcount = 0
 begin
-	raiserror('Forced execution failed. The script was not found in the migration history table.',16,1)
-end"
+	raiserror('Forced execution failed. The script was not found in the migration history table',16,1)
+end
+"@
 		}
 		else {
-			$query = "
+			$query = @"
 insert dbo.easy_migration_history(script_name, phase, [checksum])
-values(@script_name, @phase, @checksum)"
+values(@script_name, @phase, @checksum)
+"@
 		}
 
 		$sqlConn.Open()
-		$sqlCmd = [Microsoft.Data.SqlClient.SqlCommand]::new($query, $sqlConn)
+		$sqlCmd = [SqlCommand]::new($query, $sqlConn)
 		$sqlCmd.CommandType = [System.Data.CommandType]::Text
 		$pScriptName = $sqlCmd.Parameters.Add('@script_name', [System.Data.SqlDbType]::NVarChar)
 		$pScriptName.Value = $ScriptName
@@ -276,7 +281,7 @@ function Invoke-EasyMigration {
 		}
 
 		$dryRun = $true
-		$connStrParser = [Microsoft.Data.SqlClient.SqlConnectionStringBuilder]::new($ConnStr)
+		$connStrParser = [SqlConnectionStringBuilder]::new($ConnStr)
 		$target = "DataSource: {0}, InitialCatalog: {1}, Phase: {2}" `
 			-f $connStrParser.DataSource, $connStrParser.InitialCatalog, $Phase
 
