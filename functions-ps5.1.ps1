@@ -1,4 +1,4 @@
-using namespace Microsoft.Data.SqlClient
+using namespace System.Data.SqlClient
 
 function Get-FileChecksum {
 	[CmdletBinding()]
@@ -8,6 +8,20 @@ function Get-FileChecksum {
 	)
 
 	(Get-FileHash -Path $File -Algorithm SHA256).Hash
+}
+
+function Get-RelativePath {
+	[CmdletBinding()]
+	param (
+		[Parameter(Mandatory)]
+		[string]$RelativeTo,
+
+		[Parameter(Mandatory)]
+		[string]$Path
+	)
+
+	($Path -Replace [regex]::Escape($RelativeTo), ".").TrimStart(".", `
+		[System.IO.Path]::DirectorySeparatorChar)
 }
 
 function Get-Executed {
@@ -179,6 +193,7 @@ function Invoke-EasyMigration {
 		Deploys migration scripts to the target SQL Server in order
 		Detects checksum drift and stops on mismatch
 
+		Requires PowerShell 5.1+
 		Requires SQL Server PowerShell module
 		https://learn.microsoft.com/en-us/powershell/sql-server/download-sql-server-ps-module
 
@@ -349,7 +364,7 @@ function Invoke-EasyMigration {
 			if (-not $dryRun) {
 				Invoke-Migration -ConnStr $ConnStr -Script $scriptFullPath
 
-				$scriptName = [System.IO.Path]::GetRelativePath($scriptsFolder, $scriptFullPath)
+				$scriptName = Get-RelativePath -RelativeTo $scriptsFolder -Path $scriptFullPath
 				Set-Executed -ConnStr $ConnStr -ScriptName $scriptName -Phase $Phase.ToLower() `
 					-Checksum $checksum -ForceScript ($forceScript -and $scriptExecuted)
 			}

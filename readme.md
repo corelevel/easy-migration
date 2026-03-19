@@ -1,4 +1,4 @@
-# EasyMigration
+# Easy-Migration
 A lightweight PowerShell-based SQL Server migration runner that executes database migration scripts in a defined order and keeps track of executed scripts. The tool supports running both DML and DDL migration scripts and it is designed as a simple alternative to heavy migration frameworks. 
 
 The tool ensures migrations are:
@@ -23,6 +23,12 @@ PowerShell with the [SQL Server module](https://learn.microsoft.com/en-us/powers
 ```powershell
 Install-Module SqlServer
 ```
+
+## Versions
+- *functions-ps7.0.ps1* - PowerShell 7+ the latest and greatest
+    - Uses modern [Microsoft.Data.SqlClient](https://learn.microsoft.com/en-us/sql/connect/ado-net/introduction-microsoft-data-sqlclient-namespace)
+- *functions-ps5.1.ps1* - PowerShell 5.1+
+    - Uses *System.Data.SqlClient*
 
 ## Migration History Table
 The tool stores executed migrations in *dbo.easy_migration_history* table. 

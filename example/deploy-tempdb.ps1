@@ -1,4 +1,8 @@
-. (Join-Path $PSScriptRoot ".." "functions.ps1")
+# For PowerShell 7.0+
+. (Join-Path $PSScriptRoot ".." "functions-ps7.0.ps1")
+
+# For PowerShell 5.1+
+#. (Join-Path (Join-Path $PSScriptRoot "..") "functions-ps5.1.ps1")
 
 Invoke-EasyMigration `
 	-ConnStr "Data Source=(local);Initial Catalog=tempdb;Connection Timeout=5;Encrypt=False;
