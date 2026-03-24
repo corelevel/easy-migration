@@ -20,7 +20,7 @@ function Get-RelativePath {
 		[string]$Path
 	)
 
-	($Path -Replace [regex]::Escape($RelativeTo), ".").TrimStart(".", `
+	($Path -Replace [regex]::Escape($RelativeTo), '.').TrimStart('.', `
 		[System.IO.Path]::DirectorySeparatorChar)
 }
 
@@ -41,11 +41,11 @@ function Get-Executed {
 	try {
 		$sqlConn = [SQLConnection]::new()
 		$sqlConn.ConnectionString = $ConnStr
-		$query = @"
+		$query = @'
 select script_name, [checksum]
 from dbo.easy_migration_history
 where phase = @phase
-"@
+'@
 
 		$sqlConn.Open()
 		$sqlCmd = [SqlCommand]::new($query, $sqlConn)
@@ -57,8 +57,8 @@ where phase = @phase
 		if ($sqlReader.HasRows) {
 			while ($sqlReader.Read()) {
 				[PSCustomObject]@{
-					script_name = $sqlReader["script_name"].ToLower()
-					checksum = $sqlReader["checksum"]
+					script_name = $sqlReader['script_name'].ToLower()
+					checksum = $sqlReader['checksum']
 				}
 			}
 		}
@@ -104,9 +104,9 @@ function Set-Executed {
 		$sqlConn = [SQLConnection]::new()
 		$sqlConn.ConnectionString = $ConnStr
 
-		$query = ""
+		$query = ''
 		if ($ForceScript) {
-			$query = @"
+			$query = @'
 update dbo.easy_migration_history
 set [checksum] = @checksum, executed_at = sysutcdatetime()
 where script_name = @script_name and phase = @phase
@@ -115,13 +115,13 @@ if @@rowcount = 0
 begin
 	raiserror('Forced execution failed. The script was not found in the migration history table',16,1)
 end
-"@
+'@
 		}
 		else {
-			$query = @"
+			$query = @'
 insert dbo.easy_migration_history(script_name, phase, [checksum])
 values(@script_name, @phase, @checksum)
-"@
+'@
 		}
 
 		$sqlConn.Open()
@@ -259,7 +259,7 @@ function Invoke-EasyMigration {
 	Set-StrictMode -Version Latest
 
 	try {
-		$configFile = Join-Path $BasePath "migration.json"
+		$configFile = Join-Path $BasePath 'migration.json'
 		$scriptsFolder = Join-Path $BasePath $Phase
 
 		if (-not (Test-Path $configFile -PathType Leaf)) {
@@ -284,7 +284,7 @@ function Invoke-EasyMigration {
 		# Check for duplicates
 		$duplicates = $scriptList | Group-Object | Where-Object Count -gt 1
 		if ($duplicates) {
-			$names = ($duplicates | Select-Object -ExpandProperty Name) -join ", "
+			$names = ($duplicates | Select-Object -ExpandProperty Name) -join ', '
 			throw "Duplicate script names detected in configuration: $names"
 		}
 		# Check for intersection
@@ -297,14 +297,14 @@ function Invoke-EasyMigration {
 
 		$dryRun = $true
 		$connStrParser = [SqlConnectionStringBuilder]::new($ConnStr)
-		$target = "DataSource: {0}, InitialCatalog: {1}, Phase: {2}" `
-			-f $connStrParser.DataSource, $connStrParser.InitialCatalog, $Phase
+		$target = "DataSource: $($connStrParser.DataSource), InitialCatalog: " +
+			"$($connStrParser.InitialCatalog), Phase: $Phase"
 
 		if ($PSCmdlet.ShouldProcess($target)) {
 			$dryRun = $false
 		}
 		else {
-			Write-Verbose "Dry run"
+			Write-Verbose 'Dry run'
 		}
 
 		$executedScriptMap = @{}
@@ -315,14 +315,16 @@ function Invoke-EasyMigration {
 		if ($IgnoreScripts) {
 			$notPresent = $IgnoreScripts | Where-Object { $_ -notin $scriptList }
 			if ($notPresent) {
-				Write-Warning "IgnoreScripts contains names not present in configuration: $($notPresent -join ', ')"
+				Write-Warning "IgnoreScripts contains names not present in configuration: " +
+					"$($notPresent -join ', ')"
 			}
 		}
 
 		if ($ForceScripts) {
 			$notPresent = $ForceScripts | Where-Object { $_ -notin $scriptList }
 			if ($notPresent) {
-				Write-Warning "ForceScripts contains names not present in configuration: $($notPresent -join ', ')"
+				Write-Warning "ForceScripts contains names not present in configuration: " +
+					"$($notPresent -join ', ')"
 			}
 		}
 
@@ -368,14 +370,14 @@ function Invoke-EasyMigration {
 				Set-Executed -ConnStr $ConnStr -ScriptName $scriptName -Phase $Phase.ToLower() `
 					-Checksum $checksum -ForceScript ($forceScript -and $scriptExecuted)
 			}
-			Write-Verbose "Migration completed"
+			Write-Verbose 'Migration completed'
 		}
 
 		if (-not $didGoodJob) {
-			Write-Verbose "Nothing to run"
+			Write-Verbose 'Nothing to run'
 		}
 		else {
-			Write-Verbose "Easy as that!"
+			Write-Verbose 'Easy as that!'
 		}
 	}
 	catch {

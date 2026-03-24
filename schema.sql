@@ -1,4 +1,7 @@
-if not exists (select 1 from INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = N'dbo' and TABLE_NAME = N'easy_migration_history')
+if not exists (
+	select	1
+	from	INFORMATION_SCHEMA.TABLES
+	where TABLE_SCHEMA = N'dbo' and TABLE_NAME = N'easy_migration_history' and TABLE_TYPE = N'BASE TABLE')
 begin
 	create table dbo.easy_migration_history
 	(
