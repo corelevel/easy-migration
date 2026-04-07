@@ -54,12 +54,10 @@ where phase = @phase
 		$pPhase.Value = $Phase
 		$sqlReader = $sqlCmd.ExecuteReader()
 
-		if ($sqlReader.HasRows) {
-			while ($sqlReader.Read()) {
-				[PSCustomObject]@{
-					script_name = $sqlReader['script_name'].ToLower()
-					checksum = $sqlReader['checksum']
-				}
+		while ($sqlReader.Read()) {
+			[PSCustomObject]@{
+				script_name = $sqlReader['script_name'].ToLower()
+				checksum = $sqlReader['checksum']
 			}
 		}
 	}
@@ -188,6 +186,7 @@ function Invoke-EasyMigration {
 	<#
 	.SYNOPSIS
 		Deploys migration scripts to the target SQL Server
+		https://github.com/corelevel/easy-migration
 
 	.DESCRIPTION
 		Deploys migration scripts to the target SQL Server in order
