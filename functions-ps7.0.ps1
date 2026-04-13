@@ -60,14 +60,14 @@ where phase = @phase
 		}
 	}
 	finally {
-		if ($sqlReader) {
+		if ($null -ne $sqlReader) {
 			$sqlReader.Close()
 			$sqlReader.Dispose()
 		}
-		if ($sqlCmd) {
+		if ($null -ne $sqlCmd) {
 			$sqlCmd.Dispose()
 		}
-		if ($sqlConn) {
+		if ($null -ne $sqlConn) {
 			$sqlConn.Close()
 			$sqlConn.Dispose()
 		}
@@ -132,10 +132,10 @@ values(@script_name, @phase, @checksum)
 		$sqlCmd.ExecuteNonQuery() | Out-Null # Out-Null to suppress the output
 	}
 	finally {
-		if ($sqlCmd) {
+		if ($null -ne $sqlCmd) {
 			$sqlCmd.Dispose()
 		}
-		if ($sqlConn) {
+		if ($null -ne $sqlConn) {
 			$sqlConn.Close()
 			$sqlConn.Dispose()
 		}
