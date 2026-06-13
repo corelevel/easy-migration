@@ -355,7 +355,9 @@ function Invoke-EasyMigration {
 			if (-not $forceScript -and $scriptExecuted) {
 				$executedChecksum = $executedScriptMap[$scriptName]
 				if ($checksum -ne $executedChecksum) {
-					throw "Checksum mismatch for migration script: $scriptName"
+					throw "Checksum mismatch for migration script: $scriptName" +
+						" Expected: $executedChecksum" +
+						" Checksum: $checksum"
 				}
 				continue
 			}
