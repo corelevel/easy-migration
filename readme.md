@@ -25,13 +25,13 @@ Install-Module SqlServer
 ```
 
 ## Versions
-- *functions-ps7.0.ps1* - PowerShell 7+ the latest and greatest
+- `functions-ps7.0.ps1` - PowerShell 7+ the latest and greatest
     - Uses modern [Microsoft.Data.SqlClient](https://learn.microsoft.com/en-us/sql/connect/ado-net/introduction-microsoft-data-sqlclient-namespace)
-- *functions-ps5.1.ps1* - PowerShell 5.1+
+- `functions-ps5.1.ps1` - PowerShell 5.1+
     - Uses *System.Data.SqlClient*
 
 ## Migration History Table
-The tool stores executed migrations in *dbo.easy_migration_history* table. 
+The tool stores executed migrations in `dbo.easy_migration_history` table. 
 
 Add this table to source control for the target database to prevent it from being accidentally dropped by CI/CD.
 
@@ -56,7 +56,7 @@ migrations
 ```
 
 ## Configuration File
-Migration order is defined in *migration.json*. Example:
+Migration order is defined in `migration.json`. Example:
 ```javascript
 {
     "phase01": {
@@ -92,9 +92,9 @@ The script supports [-WhatIf](https://learn.microsoft.com/en-us/powershell/scrip
 - Not execute any migration scripts
 
 ## Usage
-- Create *dbo.easy_migration_history* table in the target database using *schema.sql* script
+- Create `dbo.easy_migration_history` table in the target database using *schema.sql* script
     - And don't forget to add it to source control for the target database
-- Run *Invoke-EasyMigration*:
+- Run `Invoke-EasyMigration`:
 ```powershell
 Invoke-EasyMigration `
 	-ConnStr "Data Source=(local);Initial Catalog=tempdb;Connection Timeout=5;
@@ -104,7 +104,7 @@ Invoke-EasyMigration `
 ```
 
 ## CI/CD Integration
-*Invoke-EasyMigration* can be easily integrated into CI/CD pipelines:
+`Invoke-EasyMigration` can be easily integrated into CI/CD pipelines:
 - GitHub Actions
 - Azure DevOps
 - Jenkins
