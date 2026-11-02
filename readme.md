@@ -1,3 +1,5 @@
+This repository has been retired. Please use [Fast1data.SqlServer](https://github.com/corelevel/Fast1data.SqlServer) instead.
+
 # Easy-Migration
 A lightweight PowerShell-based SQL Server migration runner that executes database migration scripts in a defined order and keeps track of executed scripts. The tool supports running both DML and DDL migration scripts and it is designed as a simple alternative to heavy migration frameworks. 
 
